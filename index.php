@@ -77,7 +77,36 @@
     	  color: #000000;
     	  padding: 10px;
   	}
-
+    /* main을 위한 css */
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+    .update-date {
+        color: #5D4037;
+        font-size: 14px;
+        text-align: right;
+        font-weight: bold;
+    }
+    ul {
+        line-height: 1.8;
+        color: #333;
+    }
+    li {
+       margin-bottom: 10px;
+    }
+    .highlight {
+        color: #d9534f;
+        font-weight: bold;
+    }
+    .section-title {
+        color: #0275d8;
+        font-weight: bold;
+    }
     </style>
 </head>
 <body>
@@ -85,7 +114,7 @@
         <h1>taeho's internet tools</h1>
         <nav>
             <a href="?main" class="<?= isset($_GET['page']) && $_GET['page'] === 'main' ? 'active' : '' ?>">&nbsp;&nbsp;홈으로&nbsp;&nbsp;</a>
-            <a href="?page=subnet-find" class="<?= isset($_GET['page']) && $_GET['page'] === 'subnet-find' ? 'active' : '' ?>">서브넷 계산기</a>
+            <a href="?page=subnet-find" class="<?= isset($_GET['page']) && $_GET['page'] === 'subnet-find' ? 'active' : '' ?>">IP 계산기</a>
             <a href="?page=date-calculator" class="<?= isset($_GET['page']) && $_GET['page'] === 'date-calculator' ? 'active' : '' ?>">날짜 계산기</a>
             <a href="?page=unixtime-calc" class="<?= isset($_GET['page']) && $_GET['page'] === 'unixtime-calc' ? 'active' : '' ?>">유닉스시간 변환기</a>
         </nav>
