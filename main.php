@@ -4,24 +4,28 @@
     <p>● 다음과 같은 기능이 1차로 공개합니다.</p>
     
     <ul>
-        <li class="section-title">1. IP 서브넷 계산기</li>
+        <li class="section-title">IP 서브넷 계산기</li>
         <ul>
-            <li>1) 두 IP를 포함하는 가장 작은 서브넷을 계산하여 보여줌</li>
-            <li>2) IP를 입력하면 입력한 IP가 포함되는 모든 서브넷을 CIDR 표기법과 시작IP, 종료IP 보여줌</li>
-            <li>3) IP를 CIDR 표기법으로 입력하면 해당 서브넷의 시작 IP와 끝IP를 계산하여 표시</li>
+            <li>두 IP를 포함하는 가장 작은 서브넷을 계산하여 보여줌</li>
+            <li>IP를 입력하면 입력한 IP가 포함되는 모든 서브넷을 CIDR 표기법과 시작IP, 종료IP 보여줌</li>
+            <li>IP를 CIDR 표기법으로 입력하면 해당 서브넷의 시작 IP와 끝IP를 계산하여 표시</li>
         </ul>
         
-        <li class="section-title">2. 날짜 계산기</li>
+        <li class="section-title">날짜 계산기</li>
         <ul>
-            <li>1) 두 날짜간의 차이를 날짜의 수로 계산하여 보여줌</li>
-            <li>2) 날짜에 날짜 수를 더하거나 뺀 날짜를 표기</li>
+            <li>두 날짜간의 차이를 날짜의 수로 계산하여 보여줌</li>
+            <li>날짜에 날짜 수를 더하거나 뺀 날짜를 표기</li>
         </ul>
         
-        <li class="section-title">3. 유닉스 시간 변환기</li>
+        <li class="section-title">유닉스 시간 변환기</li>
         <ul>
-            <li>1) 유닉스 시간(Unixtime)을 날짜(연월일 시분초)로 변환</li>
-            <li>2) 날짜와 시간을 입력하면 유닉스시간(Unixtime)으로 변환하여 출력</li>
-            <li>3) 타임존과 날짜/시간을 입력하면 세계 주요 30개 도시의 시간으로 변환하여 출력</li>
+            <li>유닉스 시간(Unixtime)을 날짜(연월일 시분초)로 변환</li>
+            <li>날짜와 시간을 입력하면 유닉스시간(Unixtime)으로 변환하여 출력</li>
+            <li>타임존과 날짜/시간을 입력하면 세계 주요 30개 도시의 시간으로 변환하여 출력</li>
+        </ul>
+        <li class="section-title">Hash 계산기</li>
+        <ul>
+            <li>평문 문자열을 입력받아 Hash 값(MD:Message Digest)을 출력</li>
         </ul>
     </ul>
 </div>
