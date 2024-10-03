@@ -2,3 +2,6 @@
     <meta property="og:title" content="Hash 계산기(해시 계산기)"/>
     <meta property="og:url" content="https://tools.blogger.pe.kr/?page=hash-calculator"/>
     <meta property="og:description" content="문자열에서 Cisco Type 7, Unix 기본 해시, MD5, SHA, Bcrypt, Scrypt 등 해시값(MD:메시지 다이제스트)을 생성하는 계산기. Cisco Type 7 암호크랙"/>
+    <meat name="keywords" content="hash,cisco type 7,MD5,SHA,Bcrypt,Scrypt,"/>
+    <meta property="og:title" content="taeho의 HASH(Message Digest) 계산기"/>
+    <title> taeho의 Hash(Message Digest) 계산기 </title>

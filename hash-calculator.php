@@ -1,5 +1,5 @@
-<h2>&nbsp;&nbsp;■ Hash 계산기</h2>
-    <div>
+<h2 align="center">■ Hash 계산기</h2>
+    <div class="container"`>
     <h3>■ 문자열을 입력받아 다양한 Hash 함수를 통해 MD(메시지 다이제스트)를 출력합니다.</h3>
 
     <form method="post" action="">
@@ -10,7 +10,7 @@
         $stz = isset($_POST['algorithm']) ? $_POST['algorithm'] : '';
     ?>
             <tr>
-                <td><label for="passwd">■ 평문 문자열 입력 : </label></td>
+                <td width="150px"><label for="passwd">■ 평문 문자열 입력 : </label></td>
                 <td><input type="text" id="passwd1" name="passwd1" value="<?php echo isset($_POST['passwd1']) ? $_POST['passwd1'] : '';?>" required></td>
             </tr>
             <tr>
@@ -30,7 +30,7 @@
             <!-- Salt 입력 필드 (기본은 숨김) -->
             <tr id="saltRow" style="display: <?php echo isset($_POST['algorithm']) && in_array($_POST['algorithm'], ['md5', 'sha256', 'sha512']) ? 'table-row;' : 'none;'; ?>">
                 <td><label for="salt">■ Salt 값 입력 : </label></td>
-                <td><input type="text" id="salt" name="salt" value="<?php echo isset($_POST['salt']) ? $_POST['salt'] : ''; ?>"><br>※ salt를 입력할 경우 Linux 비밀번호 방식의 HASH값을 생성합니다.(단, Linux의 배포본 및 round횟수 salt 값 사용 방식의 차이로 인해 실제 비밀번호 Hash와는 다릅니다.)<br>&nbsp;&nbsp;&nbsp;입력하지 않으면 단순 HASH 값을 생성합니다.</td>
+                <td><input type="text" id="salt" name="salt" value="<?php echo isset($_POST['salt']) ? $_POST['salt'] : ''; ?>"><br>※ salt를 입력할 경우 Linux 비밀번호 방식의 HASH값을 생성합니다.(단, Linux의 배포본 및 round횟수 salt 값 사용 방식의 차이로 인해 실제 비밀번호 Hash와는 다릅니다.)<br>※ 입력하지 않으면 단순 HASH 값을 생성합니다.</td>
             </tr>
             <tr>
                 <td colspan="2"><input type="submit" name="submit1" value="MD 생성"></td>
@@ -123,8 +123,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 </div>
 <br>
-<div>
-    <h3>■ Cisco Type 7으로 암호화된 비밀번호를 크랙합니다.</h3>
+<div class="container"`>
+    <h3>■ Cisco Type 7으로 암호화된 패스워드를 복호화합니다.</h3>
 
     <form method="post" action="">
     <table>
@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pwd_text = $cisco->decrypt($password);
         // 결과 출력
         echo "<h3>■ Cisco Type 7로 암호화된 문자열 $password의 복호화 문자열</h3>";
-        echo "<p><strong>해시 값:</strong> $pwd_text 입니다.</p>";
+        echo "<p><strong>암호 문자열의 원본 문자열은 </strong> " . $pwd_text ." 입니다.</p>";
     }
 }
 ?>

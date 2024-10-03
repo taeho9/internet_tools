@@ -1,5 +1,5 @@
-<h2>&nbsp;&nbsp;■ IP 계산기</h2>
-<div>
+<h2 align="center">■ IP 계산기</h2>
+<div class="container">
 <h3>■ 두 IP를 포함하는 가장 작은 서브넷을 계산합니다.</h3>
 <!-- 두 IP를 입력받기 위한 HTML 폼 -->
 <table>
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 </div>
 <br>
-<div>
+<div class="container"`>
 <h3>■ IP를 입력하면 IP가 포함되는 서브넷을 모두 출력합니다. (단, 최대 /16 네트워크까지)</h3>
 <!-- IP를 입력받기 위한 HTML 폼 -->
 <table>
@@ -169,8 +169,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 </div>
 <br>
-<div>
-<h3>■ IP를 CIDR 형태로 입력하면 IP주소 범위(네트워크 시작주소와 끝 주소)를 계산합니다.</h3>
+<div class="container"`>
+<h3>■ IP를 CIDR 형태로 입력하면 CIDR IP주소의 네트워크 시작주소와 끝 주소를 계산합니다.</h3>
 <!-- IP를 입력받기 위한 HTML 폼 -->
 <table>
     <form method="POST" action="">

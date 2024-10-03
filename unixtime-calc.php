@@ -1,12 +1,12 @@
-<h2>&nbsp;&nbsp;■ 유닉스시간(unixtime) 계산기</h2>
-    <div>
+<h2 align="center">■ 유닉스시간(unixtime) 계산기</h2>
+    <div class="container"`>
     <h3>■ 유닉스시간(Unixtime)을 날짜(연월일 시분초)로 변환</h3>
 
     <!-- Unixtime 입력 폼 -->
     <form method="post" action="">
     <table>
             <tr>
-                <td><label for="unixtime">■ 유닉스시간(Unixtime) : </label></td>
+                <td><label for="unixtime">■ 유닉스시간<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Unixtime) : </label></td>
                 <td><input type="unixtime1" id="unixtime1" name="unixtime1" value="<?php echo isset($_POST['unixtime1']) ? $_POST['unixtime1'] : '';?>" required></td>
             </tr>
             <tr>
@@ -74,7 +74,7 @@
     ?>
     </div>
     <br>
-    <div>
+    <div class="container"`>
     <h3>■ 날짜와 시간을 유닉스타임으로 변환</h3>
     <!-- 날짜와 시간 입력 폼 -->
      <?php
@@ -83,8 +83,7 @@
     <form method="post" action="">
         <table>
             <tr>
-                <td><label for="timezone">■ 타임존 : </label></td>
-                <td colspan="3">
+                <td colspan="2"><label for="timezone">■ 타임존 : 
                 <select id="timezone" name="timezone" required>
                     <option value="Asia/Seoul" <?php if ($stz == "Asia/Seoul") echo "selected"; ?>>서울 (KST)</option>
                     <option value="Asia/Tokyo" <?php if ($stz == "Asia/Tokyo") echo "selected"; ?>>도쿄 (JST)</option>
@@ -121,8 +120,8 @@
                 </td>
             </tr>
             <tr>
-                <td><label for="date">■ 날짜/시간 : </label></td><td><input type="date" id="date" name="date" value="<?php echo isset($_POST['date']) ? $_POST['date'] : date('Y-m-d');?>" required></td>
-                <td><label for="time">■ 시간 (시:분:초) : </label></td><td><input type="text" id="time" name="time" placeholder="HH:MM:SS" value="<?php echo isset($_POST['time']) ? $_POST['time'] : date("H:i:s");?>" required></td>
+                <td><label for="date">■ 날짜/시간 : </label>&nbsp;<input type="date" id="date" name="date" value="<?php echo isset($_POST['date']) ? $_POST['date'] : date('Y-m-d');?>" required></td>
+                <td><label for="time">■ 시간 (시:분:초) : </label>&nbsp;<input type="text" id="time" name="time" placeholder="HH:MM:SS" value="<?php echo isset($_POST['time']) ? $_POST['time'] : date("H:i:s");?>" required></td>
                 <script>
                     const timeInput = document.getElementById('time');
                         timeInput.addEventListener('input', function (e) {
@@ -137,7 +136,7 @@
                     </script>
             </tr>
             <tr>
-                <td colspan="4"><input type="submit" name="submit2" value="유닉스타임으로 변환"></td>
+                <td colspan="2"><input type="submit" name="submit2" value="유닉스타임으로 변환"></td>
             </tr>
         </table>
     </form>
@@ -160,7 +159,7 @@
     ?> 
     </div>
     <br>
-    <div>
+    <div class="container"`>
     <h3>■ 세계 시간 보기</h3>
     <!-- 날짜와 시간 입력 폼 -->
     <?php
@@ -169,8 +168,7 @@
     <form method="post" action="">
         <table>
             <tr>
-                <td><label for="timezone2">■ 타임존 : </label></td>
-                <td colspan="3">
+                <td colspan="2"><label for="timezone2">■ 타임존 : </label>
                 <select id="timezone2" name="timezone2" required>
                     <option value="Asia/Seoul" <?php if ($stz2 == "Asia/Seoul") echo "selected"; ?>>서울 (KST)</option>
                     <option value="Asia/Tokyo" <?php if ($stz2 == "Asia/Tokyo") echo "selected"; ?>>도쿄 (JST)</option>
@@ -207,8 +205,8 @@
                 </td>
             </tr>
             <tr>
-                <td><label for="date2">■ 날짜/시간 : </label></td><td><input type="date" id="date2" name="date2" value="<?php echo isset($_POST['date2']) ? $_POST['date2'] : date('Y-m-d');?>" required></td>
-                <td><label for="time2">■ 시간 (시:분:초) : </label></td><td><input type="text" id="time2" name="time2" placeholder="HH:MM:SS" value="<?php echo isset($_POST['time2']) ? $_POST['time2'] : date("H:i:s");?>" required></td>
+                <td><label for="date2">■ 날짜/시간 : </label>&nbsp;<input type="date" id="date2" name="date2" value="<?php echo isset($_POST['date2']) ? $_POST['date2'] : date('Y-m-d');?>" required></td>
+                <td><label for="time2">■ 시간 (시:분:초) : </label>&nbsp;<input type="text" id="time2" name="time2" placeholder="HH:MM:SS" value="<?php echo isset($_POST['time2']) ? $_POST['time2'] : date("H:i:s");?>" required></td>
                 <script>
                     const timeInput2 = document.getElementById('time2');
                         timeInput2.addEventListener('input', function (e) {
@@ -223,7 +221,7 @@
                     </script>
             </tr>
             <tr>
-                <td colspan="4"><input type="submit" name="submit3" value="세계 시간 보기"></td>
+                <td colspan="2"><input type="submit" name="submit3" value="세계 시간 보기"></td>
             </tr>
         </table>
     </form>

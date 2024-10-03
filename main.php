@@ -25,7 +25,8 @@
         </ul>
         <li class="section-title">Hash 계산기</li>
         <ul>
-            <li>평문 문자열을 입력받아 Hash 값(MD:Message Digest)을 출력</li>
+            <li>평문 문자열을 입력받아 Hash 값(MD:Message Digest)을 출력(Cisco Type 7, Unix Default(DES Base), MD5, SHA Series, BCrypt, SCrypt)</li>
+            <li>Cisco Password Type 7 암호 크랙</li>
         </ul>
     </ul>
 </div>

@@ -32,7 +32,16 @@
       }
     }
     </script>
-    <title>taeho's internet tools</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LTJ1SM2FD0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-LTJ1SM2FD0');
+    </script>
+    <!-- Google tag (gtag.js) -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -89,7 +98,7 @@
     .update-date {
         color: #5D4037;
         font-size: 14px;
-        text-align: right;
+        text-align: left;
         font-weight: bold;
     }
     ul {
@@ -97,7 +106,7 @@
         color: #333;
     }
     li {
-       margin-bottom: 10px;
+       margin-bottom: 3px;
     }
     .highlight {
         color: #d9534f;
