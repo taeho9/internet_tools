@@ -50,7 +50,7 @@
         <form method="post" action="">
             <tr>
                 <td><label for="add_date">■ 기준 날짜 (YYYY-MM-DD) : </label></td>
-                <td><input type="date" id="add_date" name="add_date" value="<?php echo isset($_POST['add_date']) ? $_POST['add_date'] : date('Y-m-d');?>" required></td>
+                <td><input type="date" id="add_date" name="add_date" value="<?php echo isset($_POST['add_date']) ? $_POST['add_date'] : '1970-01-01';?>" required></td>
             </tr>
             <tr>
                 <td><label for="days_to_add">■ 날짜 수 (일) : </label></td>
