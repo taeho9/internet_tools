@@ -1,8 +1,14 @@
 <div class="container">
+    <p class="update-date">[2024년 10월 18일 추가]</p>
+    <p>● 날짜 계산기에 양력과 음력 날짜 변환 계산기 기능을 추가하였습니다.<p>
+        <ul>
+            <li>양력을 입력하면 음력의 날짜로 변환해 보여줌. (윤달 여부 표시함)</li>
+            <li>음력 날짜와 윤달 여부를 입력받아 양력 날짜로 보여줌</li>
+        </ul>
+    </p>
     <p class="update-date">[2024년 9월 14일]</p>
     <p>● 이 웹사이트(<span class="highlight">tools.blogger.pe.kr</span>)는 taeho가 일과 취미생활을 하며 필요한 다양한 계산기능을 비롯해 유용한 기능을 웹 기반으로 구현하여 공개한 사이트입니다.</p>
     <p>● 다음과 같은 기능이 1차로 공개합니다.</p>
-    
     <ul>
         <li class="section-title">IP 서브넷 계산기</li>
         <ul>

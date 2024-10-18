@@ -100,3 +100,121 @@
     }
     ?>
     </div>
+    <br>
+    <div class="container">
+    <!-- 제대로 동작하기 위해서는 Lunar Calendar 라이브러리 사용해야 함 -->
+    <h3>■ 양력과 음력 날짜 변환 (양력 ↔ 음력)</h3>
+
+    <!-- 날짜, 양력/음력 선택 입력 폼 -->
+    <table>
+        <form method="post" action="">
+            <tr>
+                <td><label for="date">■ 날짜 (YYYY-MM-DD) : </label></td>
+                <td><input type="date" id="date" name="date" value="<?php echo isset($_POST['date']) ? $_POST['date'] : date('Y-m-d'); ?>" required></td>
+            </tr>
+            <tr>
+                <td>■ 날짜 유형 :</td>
+                <td>
+                    <input type="radio" id="solar" name="calendar_type" value="solar" <?php if ($_POST['calendar_type'] == 'solar' || $_POST['calendar_type'] == '') echo 'checked'; ?> onclick="toggleLunarOptions()">
+                    <label for="solar">양력</label>
+                    <input type="radio" id="lunar" name="calendar_type" value="lunar" <?php if ($_POST['calendar_type'] == 'lunar') echo 'checked'; ?> onclick="toggleLunarOptions()">
+                    <label for="lunar">음력</label>
+                </td>
+            </tr>
+            <tr id="leap_month_row" style="display: none;">
+            <td><label for="leap_month">■ 윤달 여부 :</label></td>
+            <td>
+                <select id="leap_month" name="leap_month">
+                    <option value="false" <?php if ($_POST['leap_month'] == "false" || $_POST['leap_month'] == "") echo "selected"; ?>>평달</option>
+                    <option value="true" <?php if ($_POST['leap_month'] == "true") echo "selected"; ?>>윤달</option>
+                </select>
+            </td>
+        </tr>
+            <tr>
+                <td colspan="2"><input type="submit" name="submit3" value="날짜 변환"></td>
+            </tr>
+        </form>
+    </table>
+    <script>
+        function toggleLunarOptions() {
+            const leapMonthRow = document.getElementById('leap_month_row');
+            const lunarRadio = document.getElementById('lunar');
+
+            // 음력이 선택되었을 때만 윤달 선택박스를 보여준다
+            if (lunarRadio.checked) {
+                leapMonthRow.style.display = 'table-row';
+            } else {
+                leapMonthRow.style.display = 'none';
+            }
+        }
+
+        // 페이지 로드 시 음력 선택 여부에 따라 윤달 선택박스를 초기화
+        window.onload = toggleLunarOptions;
+    </script>
+    <?php
+    // 폼이 제출되었는지 확인
+    if (isset($_POST['submit3'])) {
+        require_once '/usr/share/pear/KASI_Lunar.php';
+        require_once '/usr/share/pear/Lunar.php';
+
+        $lunar = new oops\Lunar;
+        
+        // 사용자로부터 입력받은 날짜와 달력 유형
+        $input_date = $_POST['date'];
+        $calendar_type = $_POST['calendar_type'];
+        $leap_month = $_POST['leap_month'];
+
+        $timestamp = strtotime($input_date);
+        $dow = date('l', $timestamp);
+
+        // 양력 ↔ 음력 변환 로직 (https://www.pabburi.co.kr/content/php/%EC%96%91%EB%A0%A5-%EC%9D%8C%EB%A0%A5-%EC%9D%8C%EB%A0%A5-%EC%96%91%EB%A0%A5-%EB%B3%80%EA%B2%BD-pear/ 에서 소개하는 양/음력 변환 라이브러리 설치해야 함)
+        if ($calendar_type == 'solar') {
+            // 입력한 날짜가 양력일 때, 음력으로 변환
+            $result   = $lunar->tolunar($input_date);  // 양력 -> 음력
+            $dateLunar  = $result->fmt;
+    
+            $result   = $lunar->tosolar ($dateLunar);  // 음력 -> 양력
+            $dateSolar  = $result->fmt;
+
+            # 입력받은 양력 날짜와 음력으로 변환한 후 다시 양력으로 변환한 날짜가 다르면 윤달인것이다.
+            $eqName   = ( $input_date == $dateSolar ) ? 'EQ':'NotEQ';
+            if ( $eqName == 'NotEQ' ) {
+                // 윤달이면 윤달임을 출력
+                ?>
+                    <h3>■ 날짜 변환 결과</h3>
+                    <table>
+                    <tr><td>입력한 날짜(양력) : </td><td><?php echo $input_date . " (" . $dow . ")"; ?></tr>
+                    <tr><td>음력 날짜 : </td><td><?php echo $dateLunar; ?>&nbsp;(윤달)</td></tr>
+                    </table>
+                <?php
+              } else {
+                ?>
+                    <h3>■ 날짜 변환 결과</h3>
+                    <table>
+                    <tr><td>입력한 날짜(양력) : </td><td><?php echo $input_date . " (" . $dow . ")"; ?></tr>
+                    <tr><td>음력 날짜 : </td><td><?php echo $dateLunar; ?></td></tr>
+                    </table>
+                <?php
+              }
+        } else {
+            // 입력한 날짜가 음력일 때, 양력으로 변환
+            if ($leap_month == "true")
+                $result   = $lunar->tosolar($input_date, true);
+            else 
+                $result   = $lunar->tosolar($input_date);
+            ?>
+                <h3>■ 날짜 변환 결과</h3>
+                <table>
+                <tr><td>입력한 날짜(음력) : </td><td><?php echo $input_date; if ($leap_month == "true") echo " (윤달)"; ?></tr>
+                <?php
+                    $timestamp = strtotime($result->fmt);
+                    $dow = date('l', $timestamp);
+                ?>
+                <tr><td>양력 날짜 : </td><td><?php echo $result->fmt . " (" . $dow . ")"; ?></td></tr>
+                </table>
+            <?php
+
+        }
+    }
+    ?>
+</div>
