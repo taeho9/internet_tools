@@ -167,7 +167,8 @@
         $timestamp = strtotime($input_date);
         $dow = date('l', $timestamp);
 
-        // 양력 ↔ 음력 변환 로직 (https://www.pabburi.co.kr/content/php/%EC%96%91%EB%A0%A5-%EC%9D%8C%EB%A0%A5-%EC%9D%8C%EB%A0%A5-%EC%96%91%EB%A0%A5-%EB%B3%80%EA%B2%BD-pear/ 에서 소개하는 양/음력 변환 라이브러리 설치해야 함)
+        // 양력 ↔ 음력 변환 로직 
+        //(https://www.pabburi.co.kr/content/php/%EC%96%91%EB%A0%A5-%EC%9D%8C%EB%A0%A5-%EC%9D%8C%EB%A0%A5-%EC%96%91%EB%A0%A5-%EB%B3%80%EA%B2%BD-pear/ 에서 소개하는 양/음력 변환 라이브러리 설치해야 함)
         if ($calendar_type == 'solar') {
             // 입력한 날짜가 양력일 때, 음력으로 변환
             $result   = $lunar->tolunar($input_date);  // 양력 -> 음력

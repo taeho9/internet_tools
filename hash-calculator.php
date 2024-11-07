@@ -32,6 +32,7 @@
                 <td><label for="salt">■ Salt 값 입력 : </label></td>
                 <td><input type="text" id="salt" name="salt" value="<?php echo isset($_POST['salt']) ? $_POST['salt'] : ''; ?>"><br>※ salt를 입력할 경우 Linux 비밀번호 방식의 HASH값을 생성합니다.(단, Linux의 배포본 및 round횟수 salt 값 사용 방식의 차이로 인해 실제 비밀번호 Hash와는 다릅니다.)<br>※ 입력하지 않으면 단순 HASH 값을 생성합니다.</td>
             </tr>
+            <tr><td colspan="2">※ salt 값과 라운드 횟수가 다르면 전혀 다른 MD가 생성된다는 점을 감안해야 합니다.</td>
             <tr>
                 <td colspan="2"><input type="submit" name="submit1" value="MD 생성"></td>
             </tr>

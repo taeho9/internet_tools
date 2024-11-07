@@ -13,7 +13,7 @@
         $page = isset($_GET['page']) ? $_GET['page'] : 'main';
 
         // Ensure the page exists and is safe to include
-        $allowed_pages = ['main', 'subnet-find', 'date-calculator', 'unixtime-calc', 'hash-calculator'];
+        $allowed_pages = ['main', 'subnet-find', 'date-calculator', 'unixtime-calc', 'hash-calculator', 'lunar-iCal-generator'];
         if (in_array($page, $allowed_pages)) {
             include($page . "-head.php");
         }
@@ -25,7 +25,7 @@
       "@type": "Website",
       "name": "IT 엔지니어링 도구 모음",
       "url": "https://tools.blogger.pe.kr",
-      "description": "IP주소 계산 및 변환기, 유닉스타임과 날짜 계산기, 세계시간 계산기를 제공하는 웹사이트",
+      "description": "IP주소 계산 및 변환기, 유닉스타임과 날짜 계산기, 세계시간 계산기, 음력 iCal 생성기를 제공하는 웹사이트",
       "author": {
         "@type": "Person",
         "name": "taeho"
@@ -127,6 +127,7 @@
             <a href="?page=date-calculator" class="<?= isset($_GET['page']) && $_GET['page'] === 'date-calculator' ? 'active' : '' ?>">날짜 계산기</a>
             <a href="?page=unixtime-calc" class="<?= isset($_GET['page']) && $_GET['page'] === 'unixtime-calc' ? 'active' : '' ?>">유닉스시간 변환기</a>
             <a href="?page=hash-calculator" class="<?= isset($_GET['page']) && $_GET['page'] === 'hash-calculator' ? 'active' : '' ?>">Hash 계산기</a>
+            <a href="?page=lunar-iCal-generator" class="<?= isset($_GET['page']) && $_GET['page'] === 'lunar-iCal-generator' ? 'active' : '' ?>">음력 iCal 생성기</a>
         </nav>
     </header>
     <main>
