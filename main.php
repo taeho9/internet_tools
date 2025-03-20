@@ -1,6 +1,6 @@
 <div class="container">
     <p class="update-date">[2024년 11월 5일 추가]</p>
-    <p>● 음력 날짜 기준의 iCal 생성기능을 추가하였습니다.(테스트 입니다.)<p>
+    <p>● 음력 날짜 기준의 iCal 생성기능을 추가하였습니다. Git GUI 테스트입니다.(2) <p>
     <ul>
         <li class="section-title">음력 iCal 생성기</li>
         <ul>
