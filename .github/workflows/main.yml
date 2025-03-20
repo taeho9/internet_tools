@@ -22,7 +22,7 @@ jobs:
           mkdir -p ~/.ssh
       - name: Add known host
         run: |
-          ssh-keyscan ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -p 4040 ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
       - name: Copy files to remote server
         run: |
           cd ${{ github.workspace }}
