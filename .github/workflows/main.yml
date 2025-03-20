@@ -27,5 +27,5 @@ jobs:
       - name: Copy files to remote server
         run: |
           cd ${{ github.workspace }}
-          scp -i ~/private-key.pem -r ./* ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_TARGET }}
+          scp -i ~/private-key.pem -P 4040 -r ./* ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_TARGET }}
           echo "Copied files to remote server"
