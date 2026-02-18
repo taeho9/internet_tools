@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+    container_name: tools-blogger-nginx
+    volumes:
+      - /data/tools.blogger.pe.kr:/var/www/html
+    environment:
+      - TZ=Asia/Seoul
+    expose:
+      - "80"
+    restart: unless-stopped
+    networks:
+      - reverse_proxy
+    depends_on:
+      - php-fpm
+
+  php-fpm:
+    build:
+      context: ./php-fpm
+    container_name: tools-blogger-php-fpm
+    volumes:
+      - /data/tools.blogger.pe.kr:/var/www/html        # 실제 PHP 코드 사용 경로
+      - /data/tools.blogger.pe.kr/logs:/var/www/html/logs # 로그 경로를 데이터 경로 하위로 일관성 있게 변경
+    environment:
+      - TZ=Asia/Seoul
+    restart: unless-stopped
+    networks:
+      - reverse_proxy
+
+networks:
+  reverse_proxy:
+    external: true
