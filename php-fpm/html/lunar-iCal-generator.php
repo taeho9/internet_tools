@@ -4,6 +4,26 @@ require_once '/usr/share/pear/Lunar.php';
 
 $lunar = new oops\Lunar;
 
+function lunarYearHasLeapMonth($lunar, $year)
+{
+    for ($month = 1; $month <= 12; $month++) {
+        $date = sprintf("%04d-%02d-%02d", $year, $month, 1);
+        $normal = $lunar->tosolar($date);
+        $leap = $lunar->tosolar($date, true);
+        if ($normal->fmt !== $leap->fmt) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function lunarMonthMayBeLeap($lunar, $lunarDate)
+{
+    $normal = $lunar->tosolar($lunarDate);
+    $leap = $lunar->tosolar($lunarDate, true);
+    return $normal->fmt !== $leap->fmt;
+}
+
 // 사용자가 입력한 값 (기본값 설정)
 $lunarDate = isset($_POST['lunarDate']) ? $_POST['lunarDate'] : '1970-01-01';
 $isLeapMonth = isset($_POST['isLeapMonth']) ? $_POST['isLeapMonth'] : 'no';
@@ -11,12 +31,27 @@ $title = isset($_POST['title']) ? mb_substr($_POST['title'], 0, 32) : '기념일
 $desc = isset($_POST['desc']) ? mb_substr($_POST['desc'], 0, 64) : '기념일(음력)의 설명을 입력하세요.';
 $startYear = isset($_POST['startYear']) ? $_POST['startYear'] : 2025;
 $endYear = isset($_POST['endYear']) ? $_POST['endYear'] : 2040;
+$yearHasLeapMonth = false;
+$inputMonthMayBeLeap = false;
+$leapNotice = '';
 
 // 입력된 날짜 분리
 list($inputYear, $lunarMonth, $lunarDay) = explode('-', $lunarDate);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
+    $yearHasLeapMonth = lunarYearHasLeapMonth($lunar, (int)$inputYear);
+    $inputMonthMayBeLeap = lunarMonthMayBeLeap($lunar, $lunarDate);
+
+    if ($yearHasLeapMonth) {
+        if ($inputMonthMayBeLeap) {
+            $leapNotice = "입력한 연도 {$inputYear}에는 윤달이 있습니다. 입력하신 음력 월 {$lunarMonth}월은 윤달월일 수 있으니 윤달 여부를 확인하세요.";
+        } else {
+            $leapNotice = "입력한 연도 {$inputYear}에는 윤달이 있습니다. 입력하신 음력 월 {$lunarMonth}월은 윤달월이 아닙니다.";
+        }
+    } else {
+        $leapNotice = "입력한 연도 {$inputYear}에는 윤달이 없습니다.";
+    }
+
     // iCal 초기 설정
     $ical = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nCALSCALE:GREGORIAN\r\n";
     
@@ -64,6 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h2 align="center">■ 음력 iCal 생성기</h2>
     <div class="container">
         <h3>■ 음력 날짜를 기준으로 시작 연도부터 마지막 연도까지 반복되는 iCal 일정을 생성합니다.</h3>
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;양력과 음력날짜의 상호 변환은 "날짜 계산기" 메뉴를 이용해주세요.</b><br>
         <table>
             <form method="post">
                 <tr>
@@ -102,6 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php 
         if ($_SERVER["REQUEST_METHOD"] == "POST") { ?>
             <h3 style="color:red;">【iCal】</h3>
+            <p style="color: blue; font-weight: bold;"><?php echo htmlspecialchars($leapNotice); ?></p>
             <textarea rows="20" cols="70"><?php echo htmlspecialchars($ical); ?></textarea>
         <?php 
         } ?>
