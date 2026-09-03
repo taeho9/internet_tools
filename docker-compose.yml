@@ -4,6 +4,7 @@ services:
   nginx:
     build:
       context: ./nginx
+    image: tools-nginx:latest
     container_name: tools-blogger-nginx
     volumes:
       - /data/tools:/var/www/html
@@ -21,6 +22,7 @@ services:
   php-fpm:
     build:
       context: ./php-fpm
+    image: tools-php-fpm:latest
     container_name: tools-blogger-php-fpm
     volumes:
       - /data/tools:/var/www/html
