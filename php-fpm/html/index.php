@@ -15,7 +15,10 @@
         // Ensure the page exists and is safe to include
         $allowed_pages = ['main', 'subnet-find', 'date-calculator', 'unixtime-calc', 'hash-calculator', 'lunar-iCal-generator'];
         if (in_array($page, $allowed_pages)) {
-            include($page . "-head.php");
+            $head_file = __DIR__ . "/" . $page . "-head.php";
+            if (file_exists($head_file)) {
+                include($head_file);
+            }
         }
     ?>
     <!-- JSON-LD를 통한 구조화된 데이터 (검색엔진이 페이지 컨텐츠를 이해하는 데 도움) -->
