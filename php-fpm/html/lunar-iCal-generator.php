@@ -25,18 +25,21 @@ function lunarMonthMayBeLeap($lunar, $lunarDate)
 }
 
 // 사용자가 입력한 값 (기본값 설정)
-$lunarDate = isset($_POST['lunarDate']) ? $_POST['lunarDate'] : '1970-01-01';
+$lunarDate = !empty($_POST['lunarDate']) ? $_POST['lunarDate'] : '1970-01-01';
 $isLeapMonth = isset($_POST['isLeapMonth']) ? $_POST['isLeapMonth'] : 'no';
 $title = isset($_POST['title']) ? mb_substr($_POST['title'], 0, 32) : '기념일(음력)의 제목을 입력하세요.';
 $desc = isset($_POST['desc']) ? mb_substr($_POST['desc'], 0, 64) : '기념일(음력)의 설명을 입력하세요.';
-$startYear = isset($_POST['startYear']) ? $_POST['startYear'] : 2025;
-$endYear = isset($_POST['endYear']) ? $_POST['endYear'] : 2040;
+$startYear = isset($_POST['startYear']) ? (int)$_POST['startYear'] : 2025;
+$endYear = isset($_POST['endYear']) ? (int)$_POST['endYear'] : 2040;
 $yearHasLeapMonth = false;
 $inputMonthMayBeLeap = false;
 $leapNotice = '';
 
 // 입력된 날짜 분리
-list($inputYear, $lunarMonth, $lunarDay) = explode('-', $lunarDate);
+$dateParts = explode('-', $lunarDate);
+$inputYear = $dateParts[0] ?? '1970';
+$lunarMonth = $dateParts[1] ?? '01';
+$lunarDay = $dateParts[2] ?? '01';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $yearHasLeapMonth = lunarYearHasLeapMonth($lunar, (int)$inputYear);
@@ -143,5 +146,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php 
         } ?>
     </div>
-</body>
-</html>
