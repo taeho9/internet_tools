@@ -14,6 +14,7 @@ services:
     restart: unless-stopped
     networks:
       - reverse_proxy
+      - internal_network
     depends_on:
       - php-fpm
 
@@ -22,14 +23,16 @@ services:
       context: ./php-fpm
     container_name: tools-blogger-php-fpm
     volumes:
-      - /data/tools.blogger.pe.kr:/var/www/html        # 실제 PHP 코드 사용 경로
-      - /data/tools.blogger.pe.kr/logs:/var/www/html/logs # 로그 경로를 데이터 경로 하위로 일관성 있게 변경
+      - /data/tools.blogger.pe.kr:/var/www/html
+      - /data/tools.blogger.pe.kr/logs:/var/www/html/logs
     environment:
       - TZ=Asia/Seoul
     restart: unless-stopped
     networks:
-      - reverse_proxy
+      - internal_network
 
 networks:
   reverse_proxy:
     external: true
+  internal_network:
+    driver: bridge

@@ -1,14 +1,11 @@
 FROM php:8.3-fpm
 
-RUN docker-php-ext-install
-RUN apt-get update && apt-get install -y
-    && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /var/www/html
 
+# 초기 배포용 소스 복사
 COPY /html/ /bootstrap-html/
 
-# 복사 스크립트를 실행하는 entrypoint 스크립트 추가
+# 엔트리포인트 스크립트 복사 및 실행 권한 부여
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
