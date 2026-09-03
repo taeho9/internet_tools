@@ -2,9 +2,7 @@ version: "3.8"
 
 services:
   nginx:
-    build:
-      context: ./nginx
-    image: tools-nginx:latest # 에러로 인해 추가
+    image: ghcr.io/taeho9/tools-nginx:latest
     container_name: tools-blogger-nginx
     volumes:
       - /data/tools:/var/www/html
@@ -20,9 +18,7 @@ services:
       - php-fpm
 
   php-fpm:
-    build:
-      context: ./php-fpm
-    image: tools-php-fpm:latest
+    image: ghcr.io/taeho9/tools-php-fpm:latest
     container_name: tools-blogger-php-fpm
     volumes:
       - /data/tools:/var/www/html
