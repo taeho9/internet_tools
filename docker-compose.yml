@@ -6,7 +6,7 @@ services:
       context: ./nginx
     container_name: tools-blogger-nginx
     volumes:
-      - /data/tools.blogger.pe.kr:/var/www/html
+      - /data/tools:/var/www/html
     environment:
       - TZ=Asia/Seoul
     expose:
@@ -23,8 +23,8 @@ services:
       context: ./php-fpm
     container_name: tools-blogger-php-fpm
     volumes:
-      - /data/tools.blogger.pe.kr:/var/www/html
-      - /data/tools.blogger.pe.kr/logs:/var/www/html/logs
+      - /data/tools:/var/www/html
+      - /data/tools/logs:/var/www/html/logs
     environment:
       - TZ=Asia/Seoul
     restart: unless-stopped
