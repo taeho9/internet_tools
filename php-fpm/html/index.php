@@ -50,7 +50,7 @@
     </script>
 
     <!-- Modern Stylesheet -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
 </head>
 <body>
     <header class="app-header">
@@ -143,6 +143,6 @@
     </footer>
 
     <!-- Client Scripts -->
-    <script src="assets/js/app.js"></script>
+    <script src="assets/js/app.js?v=2.0"></script>
 </body>
 </html>
