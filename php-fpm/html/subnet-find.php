@@ -1,237 +1,321 @@
-<h2 align="center">■ IP 계산기</h2>
-<div class="container">
-<h3>■ 두 IP를 포함하는 가장 작은 서브넷을 계산합니다.</h3>
-<!-- 두 IP를 입력받기 위한 HTML 폼 -->
-<table>
-    <form method="POST" action="">
-        <tr>
-            <td><label for="ip1">● 시작 IP 주소 : </label></td>
-            <td><input type="text" id="ip1" name="ip1" required value="<?php echo isset($_POST['ip1']) ? $_POST['ip1'] : '';?>"></td>
-        </tr>
-        <tr>
-            <td><label for="ip2">● 마지막 IP 주소 : </label></td>
-            <td><input type="text" id="ip2" name="ip2" required value="<?php echo isset($_POST['ip2']) ? $_POST['ip2'] : '';?>"></td>
-        </tr>
-        <tr>
-            <td colspan="2" style="text-align: center;">
-                <input type="submit" name="submit1" value="계산하기">
-            </td>
-        </tr>
-    </form>
-</table>
-
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['submit1'])) {
-        // 첫 번째 폼이 제출된 경우
-        $ip1 = $_POST['ip1'];
-        $ip2 = $_POST['ip2'];
+// IP 서브넷 계산 헬퍼 함수들 (중복 선언 방지)
+if (!function_exists('subnet_ipToBinary')) {
+    function subnet_ipToBinary($ip) {
+        return sprintf("%032b", ip2long($ip));
+    }
+}
 
-        // IP를 32비트 이진수로 변환하는 함수
-        function ipToBinary($ip) {
-            return sprintf("%032b", ip2long($ip));
-        }
-
-        // 공통 접두사를 찾는 함수
-        function findCommonPrefix($bin1, $bin2) {
-            $prefix = '';
-            for ($i = 0; $i < 32; $i++) {
-                if ($bin1[$i] == $bin2[$i]) {
-                    $prefix .= $bin1[$i];
-                } else {
-                    break;
-                }
+if (!function_exists('subnet_findCommonPrefix')) {
+    function subnet_findCommonPrefix($bin1, $bin2) {
+        $prefix = '';
+        for ($i = 0; $i < 32; $i++) {
+            if ($bin1[$i] == $bin2[$i]) {
+                $prefix .= $bin1[$i];
+            } else {
+                break;
             }
-            return $prefix;
         }
+        return $prefix;
+    }
+}
 
-        // 접두사 길이에 따라 서브넷 마스크를 반환하는 함수
-        function prefixToSubnetMask($prefixLength) {
-            return long2ip(-1 << (32 - $prefixLength));
-        }
+if (!function_exists('subnet_prefixToSubnetMask')) {
+    function subnet_prefixToSubnetMask($prefixLength) {
+        return long2ip(-1 << (32 - $prefixLength));
+    }
+}
 
-        // 브로드캐스트 주소 계산 함수
-        function calculateBroadcastAddress($networkAddress, $prefixLength) {
-            $hostBits = 32 - $prefixLength;
-            return long2ip(ip2long($networkAddress) | ((1 << $hostBits) - 1));
-        }
+if (!function_exists('subnet_calculateBroadcastAddress')) {
+    function subnet_calculateBroadcastAddress($networkAddress, $prefixLength) {
+        $hostBits = 32 - $prefixLength;
+        return long2ip(ip2long($networkAddress) | ((1 << $hostBits) - 1));
+    }
+}
 
-        // 시작 IP 계산
-        function calculateStartIP($networkAddress) {
-            return long2ip(ip2long($networkAddress) + 1);  // 첫 번째 호스트 IP
-        }
+if (!function_exists('subnet_calculateStartIP')) {
+    function subnet_calculateStartIP($networkAddress) {
+        return long2ip(ip2long($networkAddress) + 1);
+    }
+}
 
-        // 끝 IP 계산
-        function calculateEndIP($broadcastAddress) {
-            return long2ip(ip2long($broadcastAddress) - 1);  // 마지막 호스트 IP
-        }
+if (!function_exists('subnet_calculateEndIP')) {
+    function subnet_calculateEndIP($broadcastAddress) {
+        return long2ip(ip2long($broadcastAddress) - 1);
+    }
+}
 
-        // 가장 작은 서브넷을 계산하는 함수
-        function findSmallestSubnet($ip1, $ip2) {
-            $bin1 = ipToBinary($ip1);
-            $bin2 = ipToBinary($ip2);
+if (!function_exists('subnet_findSmallestSubnet')) {
+    function subnet_findSmallestSubnet($ip1, $ip2) {
+        $bin1 = subnet_ipToBinary($ip1);
+        $bin2 = subnet_ipToBinary($ip2);
 
-            // 두 IP의 공통된 접두사 찾기
-            $commonPrefix = findCommonPrefix($bin1, $bin2);
-            $prefixLength = strlen($commonPrefix);
+        $commonPrefix = subnet_findCommonPrefix($bin1, $bin2);
+        $prefixLength = strlen($commonPrefix);
 
-            // 공통 접두사를 기반으로 네트워크 주소 계산
-            $networkAddress = substr($commonPrefix, 0, $prefixLength) . str_repeat('0', 32 - $prefixLength);
-            $networkAddress = long2ip(bindec($networkAddress));
+        $networkAddress = substr($commonPrefix, 0, $prefixLength) . str_repeat('0', 32 - $prefixLength);
+        $networkAddress = long2ip(bindec($networkAddress));
 
-            // 서브넷 마스크와 브로드캐스트 주소 계산
-            $subnetMask = prefixToSubnetMask($prefixLength);
-            $broadcastAddress = calculateBroadcastAddress($networkAddress, $prefixLength);
+        $subnetMask = subnet_prefixToSubnetMask($prefixLength);
+        $broadcastAddress = subnet_calculateBroadcastAddress($networkAddress, $prefixLength);
 
-            // 시작 IP와 끝 IP 계산
-            $startIP = calculateStartIP($networkAddress);
-            $endIP = calculateEndIP($broadcastAddress);
+        $startIP = subnet_calculateStartIP($networkAddress);
+        $endIP = subnet_calculateEndIP($broadcastAddress);
 
-            return [$networkAddress, $subnetMask, $prefixLength, $startIP, $endIP, $broadcastAddress];
-        }
+        return [$networkAddress, $subnetMask, $prefixLength, $startIP, $endIP, $broadcastAddress];
+    }
+}
+?>
 
-        // 입력된 IP 주소로 서브넷 계산
+<div class="page-hero">
+    <h1 class="page-title">
+        <span class="brand-icon" style="background: linear-gradient(135deg, #3b82f6, #06b6d4);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                <line x1="6" y1="18" x2="6.01" y2="18"></line>
+            </svg>
+        </span>
+        IP & 서브넷 계산기
+    </h1>
+    <p class="page-subtitle">
+        두 IP를 포함하는 가장 작은 서브넷 산출, IP가 속하는 전체 서브넷 목록 분석, CIDR 표기법의 네트워크 및 브로드캐스트 주소 범위를 정밀 계산합니다.
+    </p>
+</div>
+
+<!-- Section 1: Smallest Subnet containing two IPs -->
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h2 class="card-title">
+                <span class="badge badge-primary">기능 1</span>
+                두 IP를 포함하는 최소 서브넷 계산
+            </h2>
+            <p class="card-desc">시작 IP와 마지막 IP 주소를 입력하면 두 주소를 모두 수용하는 최소 크기의 서브넷(CIDR)을 도출합니다.</p>
+        </div>
+    </div>
+
+    <form method="POST" action="">
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label" for="ip1">시작 IP 주소</label>
+                <input type="text" class="form-input" id="ip1" name="ip1" required placeholder="예: 192.168.1.10" value="<?= isset($_POST['ip1']) ? htmlspecialchars($_POST['ip1']) : '' ?>">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="ip2">마지막 IP 주소</label>
+                <input type="text" class="form-input" id="ip2" name="ip2" required placeholder="예: 192.168.1.150" value="<?= isset($_POST['ip2']) ? htmlspecialchars($_POST['ip2']) : '' ?>">
+            </div>
+        </div>
+        <button type="submit" name="submit1" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            최소 서브넷 계산하기
+        </button>
+    </form>
+
+    <?php
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit1'])) {
+        $ip1 = trim($_POST['ip1']);
+        $ip2 = trim($_POST['ip2']);
+
         if (filter_var($ip1, FILTER_VALIDATE_IP) && filter_var($ip2, FILTER_VALIDATE_IP)) {
-            list($networkAddress, $subnetMask, $prefixLength, $startIP, $endIP, $broadcastAddress) = findSmallestSubnet($ip1, $ip2);
-            echo '<h3>【계산 결과】</h3>';
-            echo '<table>';
-            echo '<tr><td>● Network Address</td><td><strong>' . $networkAddress . '</strong></td></tr>';
-            echo '<tr><td>● Subnet Mask</td><td><strong>' . $subnetMask . '</strong></td></tr>';
-            echo '<tr><td>● CIDR IP</td><td><strong>' . $networkAddress . '/' . $prefixLength . '</strong></td></tr>';
-            echo '<tr><td>● Start IP</td><td><strong>' . $startIP . '</strong></td></tr>';
-            echo '<tr><td>● End IP</td><td><strong>' . $endIP . '</strong></td></tr>';
-            echo '<tr><td>● Broadcast IP</td><td><strong>' . $broadcastAddress . '</strong></td></tr>';
-            echo '</table>';
+            list($networkAddress, $subnetMask, $prefixLength, $startIP, $endIP, $broadcastAddress) = subnet_findSmallestSubnet($ip1, $ip2);
+            ?>
+            <div class="result-card">
+                <div class="result-header">
+                    <div class="result-title">
+                        <span class="badge badge-success">계산 성공</span>
+                        최소 서브넷 산출 결과
+                    </div>
+                </div>
+                <div class="result-body" style="padding: 0;">
+                    <table class="modern-table">
+                        <tbody>
+                            <tr>
+                                <th style="width: 220px;">CIDR 네트워크 표기</th>
+                                <td>
+                                    <strong style="color: var(--primary); font-size: 1.05rem;" id="res-cidr"><?= $networkAddress ?>/<?= $prefixLength ?></strong>
+                                    <button type="button" class="btn-copy" style="margin-left: 0.5rem;" onclick="copyToClipboard('res-cidr', this)">복사</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Network Address</th>
+                                <td><code id="res-net"><?= $networkAddress ?></code></td>
+                            </tr>
+                            <tr>
+                                <th>Subnet Mask</th>
+                                <td><code id="res-mask"><?= $subnetMask ?></code></td>
+                            </tr>
+                            <tr>
+                                <th>First Usable Host IP</th>
+                                <td><code id="res-start"><?= $startIP ?></code></td>
+                            </tr>
+                            <tr>
+                                <th>Last Usable Host IP</th>
+                                <td><code id="res-end"><?= $endIP ?></code></td>
+                            </tr>
+                            <tr>
+                                <th>Broadcast Address</th>
+                                <td><code id="res-bcast"><?= $broadcastAddress ?></code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <?php
         } else {
-            echo '<h3 style="color:red;">Invalid IP address format. Please enter valid IPs.</h3>';
+            echo '<div class="alert-box alert-warning" style="margin-top: 1.25rem;">올바른 IPv4 주소 형식을 입력해 주세요. (예: 192.168.0.1)</div>';
         }
     }
-}
-?>
+    ?>
 </div>
-<br>
-<div class="container"`>
-<h3>■ IP를 입력하면 IP가 포함되는 서브넷을 모두 출력합니다. (단, 최대 /16 네트워크까지)</h3>
-<!-- IP를 입력받기 위한 HTML 폼 -->
-<table>
+
+<!-- Section 2: All subnets containing IP -->
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h2 class="card-title">
+                <span class="badge badge-info">기능 2</span>
+                IP가 포함된 모든 서브넷 탐색 (/32 ~ /16)
+            </h2>
+            <p class="card-desc">입력한 IP 주소가 포함될 수 있는 모든 서브넷 범위(최대 /16 네트워크까지)를 한눈에 대조합니다.</p>
+        </div>
+    </div>
+
     <form method="POST" action="">
-        <tr>
-            <td><label for="ip">● IP 주소 : </label></td>
-            <td><input type="text" id="ip" name="ip" required value="<?php echo isset($_POST['ip']) ? $_POST['ip'] : '';?>"></td>
-        </tr>
-        <tr>
-            <td colspan="2" style="text-align: center;">
-                <input type="submit" name="submit2" value="계산하기">
-            </td>
-        </tr>
+        <div class="form-group" style="max-width: 420px;">
+            <label class="form-label" for="ip">기준 IP 주소</label>
+            <input type="text" class="form-input" id="ip" name="ip" required placeholder="예: 10.10.25.100" value="<?= isset($_POST['ip']) ? htmlspecialchars($_POST['ip']) : '' ?>">
+        </div>
+        <button type="submit" name="submit2" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            모든 서브넷 탐색하기
+        </button>
     </form>
-</table>
 
-<?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['submit2'])) {
-        // 두 번째 폼이 제출된 경우
-        $ip = $_POST['ip'];
+    <?php
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit2'])) {
+        $ip = trim($_POST['ip']);
 
-        // IP를 32비트 이진수로 변환하는 함수
-        function ipToBinary($ip) {
-            return sprintf("%032b", ip2long($ip));
-        }
-
-        // IP가 포함된 서브넷을 출력하는 함수
-        function findAllSubnets($ip) {
-            $ip_long = ip2long($ip);
-
-            echo '<h3>【서브넷 계산 결과】</h3>';
-            echo '<table>';
-            echo '<tr><td>● 서브넷</td><td><strong>시작 IP</strong></td><td><strong>종료 IP</strong></td></tr>';
-
-            for ($prefix = 32; $prefix >= 16; $prefix--) {
-                $mask = -1 << (32 - $prefix);
-                $network = $ip_long & $mask;
-                $start_ip = long2ip($network);
-                $end_ip = long2ip($network | ~$mask);
-                
-                echo '<tr><td>' . $start_ip . '/' . $prefix . '</td><td><strong>' . $start_ip . '</strong></td><td><strong>' . $end_ip . '</strong></td></tr>';
-            }
-
-            echo '</table>';
-        }
-
-        // 입력된 IP로 서브넷 계산 후 출력
         if (filter_var($ip, FILTER_VALIDATE_IP)) {
-            findAllSubnets($ip);
+            $ip_long = ip2long($ip);
+            ?>
+            <div class="result-card">
+                <div class="result-header">
+                    <div class="result-title">
+                        <span class="badge badge-success">탐색 완료</span>
+                        <?= htmlspecialchars($ip) ?> 이 포함된 서브넷 목록
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>서브넷 (CIDR)</th>
+                                <th>네트워크 시작 IP</th>
+                                <th>네트워크 종료 IP (브로드캐스트)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            for ($prefix = 32; $prefix >= 16; $prefix--) {
+                                $mask = -1 << (32 - $prefix);
+                                $network = $ip_long & $mask;
+                                $start_ip = long2ip($network);
+                                $end_ip = long2ip($network | ~$mask);
+                                echo '<tr>';
+                                echo '<td><strong style="color: var(--primary);">' . $start_ip . '/' . $prefix . '</strong></td>';
+                                echo '<td><code>' . $start_ip . '</code></td>';
+                                echo '<td><code>' . $end_ip . '</code></td>';
+                                echo '</tr>';
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <?php
         } else {
-            echo '<h3 style="color:red;">Invalid IP address format. Please enter a valid IP.</h3>';
+            echo '<div class="alert-box alert-warning" style="margin-top: 1.25rem;">올바른 IPv4 주소 형식을 입력해 주세요.</div>';
         }
     }
-}
-?>
+    ?>
 </div>
-<br>
-<div class="container"`>
-<h3>■ IP를 CIDR 형태로 입력하면 CIDR IP주소의 네트워크 시작주소와 끝 주소를 계산합니다.</h3>
-<!-- IP를 입력받기 위한 HTML 폼 -->
-<table>
+
+<!-- Section 3: CIDR Range Calculator -->
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h2 class="card-title">
+                <span class="badge badge-warning">기능 3</span>
+                CIDR 네트워크 범위 계산
+            </h2>
+            <p class="card-desc">CIDR 표기법(IP/Prefix)을 입력하면 네트워크 주소와 브로드캐스트 주소를 계산합니다.</p>
+        </div>
+    </div>
+
     <form method="POST" action="">
-        <tr>
-            <td><label for="cidrip">● IP 주소(CIDR) : </label></td>
-            <td><input type="text" id="cidrip" name="cidrip" size=15 style="width: 150px;" required value="<?php echo isset($_POST['cidrip']) ? $_POST['cidrip'] : '';?>"></td>
-        </tr>
-        <tr>
-            <td colspan="2" style="text-align: center;">
-                <input type="submit" name="submit3" value="계산하기">
-            </td>
-        </tr>
+        <div class="form-group" style="max-width: 420px;">
+            <label class="form-label" for="cidrip">CIDR 표기 IP</label>
+            <input type="text" class="form-input" id="cidrip" name="cidrip" required placeholder="예: 172.16.0.0/20" value="<?= isset($_POST['cidrip']) ? htmlspecialchars($_POST['cidrip']) : '' ?>">
+            <span class="form-helper">형식: IP주소/프리픽스길이 (예: 10.0.0.0/24)</span>
+        </div>
+        <button type="submit" name="submit3" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            범위 계산하기
+        </button>
     </form>
-</table>
 
-<?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['submit3'])) {
-        $cidr = $_POST['cidrip'];
+    <?php
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit3'])) {
+        $cidr = trim($_POST['cidrip']);
+        $cidrParts = explode('/', $cidr);
 
-        // IP와 CIDR을 분리
-        function parseCIDR($cidr) {
-            list($ip3, $prefix) = explode('/', $cidr);
-            return [$ip3, (int)$prefix];
-        }
-
-        // 네트워크 주소 계산
-        function getNetworkAddress($ip3, $prefix) {
-            $ip_long = ip2long($ip3);
-            $mask = -1 << (32 - $prefix);
-            return long2ip($ip_long & $mask);
-        }
-
-        // 브로드캐스트 주소 계산
-        function getBroadcastAddress($ip3, $prefix) {
-            $ip_long = ip2long($ip3);
-            $mask = -1 << (32 - $prefix);
-            return long2ip($ip_long | ~$mask);
-        }
-
-        // 입력된 IP와 CIDR에서 네트워크 범위 계산
-        function calculateRange($cidr) {
-            list($ip3, $prefix) = parseCIDR($cidr);
+        if (count($cidrParts) === 2) {
+            $ip3 = $cidrParts[0];
+            $prefix = (int)$cidrParts[1];
 
             if (filter_var($ip3, FILTER_VALIDATE_IP) && $prefix >= 0 && $prefix <= 32) {
-                $network_address = getNetworkAddress($ip3, $prefix);
-                $broadcast_address = getBroadcastAddress($ip3, $prefix);
-
-                echo '<h3>【네트워크 범위 계산 결과】</h3>';
-                echo '<table>';
-                echo '<tr><td><strong>시작(네트워크)주소</strong></td><td><strong>마지막(브로드캐스트)주소</strong></td></tr>';
-                echo '<tr><td>' . $network_address . '</td><td>' . $broadcast_address . '</td></tr>';
-                echo '</table>';
+                $ip_long = ip2long($ip3);
+                $mask = -1 << (32 - $prefix);
+                $network_address = long2ip($ip_long & $mask);
+                $broadcast_address = long2ip($ip_long | ~$mask);
+                ?>
+                <div class="result-card">
+                    <div class="result-header">
+                        <div class="result-title">
+                            <span class="badge badge-success">계산 성공</span>
+                            <?= htmlspecialchars($cidr) ?> 범위 산출 결과
+                        </div>
+                    </div>
+                    <div class="result-body" style="padding: 0;">
+                        <table class="modern-table">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 220px;">시작(네트워크) 주소</th>
+                                    <td>
+                                        <strong style="color: var(--primary);" id="cidr-res-net"><?= $network_address ?></strong>
+                                        <button type="button" class="btn-copy" style="margin-left: 0.5rem;" onclick="copyToClipboard('cidr-res-net', this)">복사</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>마지막(브로드캐스트) 주소</th>
+                                    <td>
+                                        <strong style="color: var(--primary);" id="cidr-res-bcast"><?= $broadcast_address ?></strong>
+                                        <button type="button" class="btn-copy" style="margin-left: 0.5rem;" onclick="copyToClipboard('cidr-res-bcast', this)">복사</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <?php
             } else {
-                echo '<h3 style="color:red;">잘못된 IP 주소 또는 CIDR 형식입니다. 올바른 값을 입력하세요.</h3>';
+                echo '<div class="alert-box alert-warning" style="margin-top: 1.25rem;">유효하지 않은 CIDR 형식입니다. 예: 192.168.1.0/24 (Prefix: 0~32)</div>';
             }
+        } else {
+            echo '<div class="alert-box alert-warning" style="margin-top: 1.25rem;">올바른 CIDR 형식(IP/Prefix)을 입력해 주세요. (예: 10.0.0.0/16)</div>';
         }
-
-        // 입력된 CIDR로 범위 계산 후 출력
-        calculateRange($cidr);
     }
-}
-?>
+    ?>
 </div>

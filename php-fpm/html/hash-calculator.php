@@ -1,83 +1,104 @@
-<h2 align="center">■ Hash 계산기</h2>
-    <div class="container"`>
-    <h3>■ 문자열을 입력받아 다양한 Hash 함수를 통해 MD(메시지 다이제스트)를 출력합니다.</h3>
+<?php
+require_once("cisco7.php");
+$stz = isset($_POST['algorithm']) ? $_POST['algorithm'] : 'sha256';
+?>
+
+<div class="page-hero">
+    <h1 class="page-title">
+        <span class="brand-icon" style="background: linear-gradient(135deg, #8b5cf6, #6366f1);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </span>
+        Hash(MD) 계산기 & 크랙
+    </h1>
+    <p class="page-subtitle">
+        평문 텍스트로부터 MD5, SHA 시리즈, BCrypt, SCrypt 등 다양한 해시 함수를 통해 메시지 다이제스트(MD)를 생성하고, 네트워크 장비의 Cisco Type 7 비밀번호를 복호화(크랙)합니다.
+    </p>
+</div>
+
+<!-- Section 1: Generate Hash -->
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h2 class="card-title">
+                <span class="badge badge-primary">기능 1</span>
+                문자열 해시값(Message Digest) 생성
+            </h2>
+            <p class="card-desc">원하는 암호화 해시 알고리즘과 평문 문자열을 입력하여 다이제스트를 생성합니다.</p>
+        </div>
+    </div>
 
     <form method="post" action="">
-    <table>
-    <!-- 비밀번호 입력 폼 -->
-    <?php
-        require_once("cisco7.php");
-        $stz = isset($_POST['algorithm']) ? $_POST['algorithm'] : '';
-    ?>
-            <tr>
-                <td width="150px"><label for="passwd">■ 평문 문자열 입력 : </label></td>
-                <td><input type="text" id="passwd1" name="passwd1" value="<?php echo isset($_POST['passwd1']) ? $_POST['passwd1'] : '';?>" required></td>
-            </tr>
-            <tr>
-                <td><label for="algorithm">■ 알고리즘 선택 </label></td>
-                <td><select id="algorithm" name="algorithm" onchange="toggleSaltInput()">
-                    <option value="cisco7" <?php if ($stz == "cisco7") echo "selected"; ?>>Cisco Type 7</option>
-                    <option value="unix" <?php if ($stz == "unix") echo "selected"; ?>>Unix Default (crypt)</option>
-                    <option value="md5" <?php if ($stz == "md5") echo "selected"; ?>>MD5</option>
-                    <option value="sha1" <?php if ($stz == "sha1") echo "selected"; ?>>SHA1(SHA-128)</option>
-                    <option value="sha256" <?php if ($stz == "sha256") echo "selected"; ?>>SHA-256</option>
-                    <option value="sha512" <?php if ($stz == "sha512") echo "selected"; ?>>SHA-512</option>
-                    <option value="scrypt" <?php if ($stz == "scrypt") echo "selected"; ?>>SCrypt</option>
-                    <option value="bcrypt" <?php if ($stz == "bcrypt") echo "selected"; ?>>BCrypt</option>
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label" for="passwd1">평문 문자열 (Plaintext)</label>
+                <input type="text" class="form-input" id="passwd1" name="passwd1" value="<?= isset($_POST['passwd1']) ? htmlspecialchars($_POST['passwd1']) : '' ?>" placeholder="해시를 생성할 텍스트 입력" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="algorithm">해시 알고리즘 선택</label>
+                <select class="form-select" id="algorithm" name="algorithm" onchange="toggleSaltInput()">
+                    <option value="sha256" <?= $stz === "sha256" ? "selected" : "" ?>>SHA-256 (권장 표준)</option>
+                    <option value="sha512" <?= $stz === "sha512" ? "selected" : "" ?>>SHA-512</option>
+                    <option value="sha1" <?= $stz === "sha1" ? "selected" : "" ?>>SHA-1 (SHA-128)</option>
+                    <option value="md5" <?= $stz === "md5" ? "selected" : "" ?>>MD5</option>
+                    <option value="bcrypt" <?= $stz === "bcrypt" ? "selected" : "" ?>>BCrypt (단방향 비밀번호 저장용)</option>
+                    <option value="scrypt" <?= $stz === "scrypt" ? "selected" : "" ?>>SCrypt (메모리 집약형 암호화)</option>
+                    <option value="unix" <?= $stz === "unix" ? "selected" : "" ?>>Unix Default (crypt)</option>
+                    <option value="cisco7" <?= $stz === "cisco7" ? "selected" : "" ?>>Cisco Type 7</option>
                 </select>
-                </td>
-            </tr>
-            <!-- Salt 입력 필드 (기본은 숨김) -->
-            <tr id="saltRow" style="display: <?php echo isset($_POST['algorithm']) && in_array($_POST['algorithm'], ['md5', 'sha256', 'sha512']) ? 'table-row;' : 'none;'; ?>">
-                <td><label for="salt">■ Salt 값 입력 : </label></td>
-                <td><input type="text" id="salt" name="salt" value="<?php echo isset($_POST['salt']) ? $_POST['salt'] : ''; ?>"><br>※ salt를 입력할 경우 Linux 비밀번호 방식의 HASH값을 생성합니다.(단, Linux의 배포본 및 round횟수 salt 값 사용 방식의 차이로 인해 실제 비밀번호 Hash와는 다릅니다.)<br>※ 입력하지 않으면 단순 HASH 값을 생성합니다.</td>
-            </tr>
-            <tr><td colspan="2">※ salt 값과 라운드 횟수가 다르면 전혀 다른 MD가 생성된다는 점을 감안해야 합니다.</td>
-            <tr>
-                <td colspan="2"><input type="submit" name="submit1" value="MD 생성"></td>
-            </tr>
-    </table>
-</form>
+            </div>
+        </div>
 
-<script>
-// md5, sha256, sha512인 경우에만 salt입력창을 보여줌
-function toggleSaltInput() {
-    var algorithm = document.getElementById("algorithm").value;
-    var saltRow = document.getElementById("saltRow");
+        <!-- Salt Input Field -->
+        <div class="form-group" id="saltRow" style="display: <?= isset($_POST['algorithm']) && in_array($_POST['algorithm'], ['md5', 'sha256', 'sha512']) ? 'flex' : 'none' ?>;">
+            <label class="form-label" for="salt">Salt 값 입력 (선택 사항)</label>
+            <input type="text" class="form-input" id="salt" name="salt" placeholder="예: random_salt_123" value="<?= isset($_POST['salt']) ? htmlspecialchars($_POST['salt']) : '' ?>">
+            <span class="form-helper">
+                * Salt를 입력할 경우 Linux shadow 방식의 해시값($1$, $5$, $6$)을 생성합니다.<br>
+                * 비워두실 경우 일반 표준 Hex 다이제스트를 생성합니다.
+            </span>
+        </div>
 
-    // MD5, SHA-256, SHA-512 선택 시만 Salt 입력을 활성화
-    if (algorithm === "md5" || algorithm === "sha256" || algorithm === "sha512") {
-        saltRow.style.display = "table-row";  // 보이도록 설정
-    } else {
-        saltRow.style.display = "none";  // 숨김
-    }
-}
-</script>
+        <button type="submit" name="submit1" class="btn btn-primary" style="margin-top: 0.5rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            해시값(MD) 생성하기
+        </button>
+    </form>
 
-<?php  
+    <script>
+        function toggleSaltInput() {
+            const algorithm = document.getElementById("algorithm").value;
+            const saltRow = document.getElementById("saltRow");
+            if (algorithm === "md5" || algorithm === "sha256" || algorithm === "sha512") {
+                saltRow.style.display = "flex";
+            } else {
+                saltRow.style.display = "none";
+            }
+        }
+    </script>
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['submit1'])) {
+    <?php  
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit1'])) {
         $password = $_POST['passwd1'];
         $algorithm = $_POST['algorithm'];
-        $salt = isset($_POST['salt']) ? $_POST['salt'] : '';  // Salt 값 가져오기
+        $salt = isset($_POST['salt']) ? trim($_POST['salt']) : '';
         $hashed_password = '';
 
-        // 선택한 알고리즘에 따라 해시 또는 암호화 처리
         switch ($algorithm) {
             case 'cisco7':
                 $cisco = new Cisco7();
                 $hashed_password = $cisco->encrypt($password);
                 break;
             case 'unix':
-                $hashed_password = crypt($password, "salt");  // 기본 Unix 암호화 (crypt 함수)
+                $hashed_password = crypt($password, "salt");
                 break;
             case 'md5':
                 if (!empty($salt)) {
-                    // Salt 값이 있을 때 Linux 스타일의 MD5 해시 생성
                     $hashed_password = crypt($password, '$1$' . $salt . '$');
                 } else {
-                    // Salt 값이 없을 때 기존 방식 사용
                     $hashed_password = md5($password);
                 }
                 break;
@@ -86,19 +107,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
             case 'sha256':
                 if (!empty($salt)) {
-                    // Salt 값이 있을 때 Linux 스타일의 SHA-256 해시 생성
                     $hashed_password = crypt($password, '$5$' . $salt . '$');
                 } else {
-                    // Salt 값이 없을 때 기존 방식 사용
                     $hashed_password = hash('sha256', $password);
                 }
                 break;
             case 'sha512':
                 if (!empty($salt)) {
-                    // Salt 값이 있을 때 Linux 스타일의 SHA-512 해시 생성
                     $hashed_password = crypt($password, '$6$' . $salt . '$');
                 } else {
-                    // Salt 값이 없을 때 기존 방식 사용
                     $hashed_password = hash('sha512', $password);
                 }
                 break;
@@ -115,43 +132,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             default:
                 $hashed_password = "알 수 없는 알고리즘";
         }
-
-        // 결과 출력
-        echo "<h3>■ 선택한 알고리즘: $algorithm</h3>";
-        echo "<p><strong>해시 값:</strong> $hashed_password</p>";
+        ?>
+        <div class="result-card">
+            <div class="result-header">
+                <div class="result-title">
+                    <span class="badge badge-success"><?= strtoupper(htmlspecialchars($algorithm)) ?></span>
+                    생성된 해시 결과
+                </div>
+                <button type="button" class="btn-copy" onclick="copyToClipboard('hash-output', this)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    복사하기
+                </button>
+            </div>
+            <div class="result-body">
+                <div class="code-display" id="hash-output"><?= htmlspecialchars($hashed_password) ?></div>
+            </div>
+        </div>
+        <?php
     }
-}
-?>
+    ?>
 </div>
-<br>
-<div class="container"`>
-    <h3>■ Cisco Type 7으로 암호화된 패스워드를 복호화합니다.</h3>
+
+<!-- Section 2: Cisco Type 7 Crack -->
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h2 class="card-title">
+                <span class="badge badge-warning">기능 2</span>
+                Cisco Password Type 7 복호화 (크랙)
+            </h2>
+            <p class="card-desc">Cisco 라우터 및 스위치 설정 파일(running-config)에 저장된 Type 7 암호문을 평문으로 복호화합니다.</p>
+        </div>
+    </div>
 
     <form method="post" action="">
-    <table>
-    <!-- 비밀번호 입력 폼 -->
-        <tr>
-            <td><label for="passwd2">■ Cisco Type 7 암호문자열 : </label></td>
-            <td><input type="text" id="passwd2" name="passwd2" value="<?php echo isset($_POST['passwd2']) ? $_POST['passwd2'] : '';?>" required></td>
-        </tr>
-        <tr>
-            <td colspan="2"><input type="submit" name="submit2" value="복호화하기"></td>
-        </tr>
-    </table>
+        <div class="form-group" style="max-width: 500px;">
+            <label class="form-label" for="passwd2">Cisco Type 7 암호 문자열</label>
+            <input type="text" class="form-input" id="passwd2" name="passwd2" value="<?= isset($_POST['passwd2']) ? htmlspecialchars($_POST['passwd2']) : '' ?>" placeholder="예: 0822455D0A16" required>
+        </div>
+        <button type="submit" name="submit2" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 2l-2 2m-6 6l-3-3m0 0l-3 3m3-3v12"></path></svg>
+            암호 복호화(크랙)하기
+        </button>
     </form>
 
-<?php  
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['submit2'])) {
-        $password = $_POST['passwd2'];
+    <?php  
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit2'])) {
+        $password = trim($_POST['passwd2']);
         $cisco = new Cisco7();
         $pwd_text = $cisco->decrypt($password);
-        // 결과 출력
-        echo "<h3>■ Cisco Type 7로 암호화된 문자열 $password의 복호화 문자열</h3>";
-        echo "<p><strong>암호 문자열의 원본 문자열은 </strong> " . $pwd_text ." 입니다.</p>";
+        ?>
+        <div class="result-card">
+            <div class="result-header">
+                <div class="result-title">
+                    <span class="badge badge-success">복호화 완료</span>
+                    Cisco Type 7 원본 평문
+                </div>
+                <button type="button" class="btn-copy" onclick="copyToClipboard('cisco-plain-output', this)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    복사하기
+                </button>
+            </div>
+            <div class="result-body">
+                <div style="font-size: 1.15rem; color: var(--text-main);">
+                    암호문 <code><?= htmlspecialchars($password) ?></code> 의 원본 비밀번호:
+                    <strong style="font-size: 1.35rem; color: var(--primary); margin-left: 0.5rem;" id="cisco-plain-output"><?= htmlspecialchars($pwd_text) ?></strong>
+                </div>
+            </div>
+        </div>
+        <?php
     }
-}
-?>
-
+    ?>
 </div>

@@ -9,8 +9,13 @@
     <meta property="og.article.author" content="taeho"/>
     <meta property="og:site_name" content="Internet Engineering Tools"/>
     <?php
-        // Default page
-        $page = isset($_GET['page']) ? $_GET['page'] : 'main';
+        // Default page determination
+        $page = 'main';
+        if (isset($_GET['page']) && !empty($_GET['page'])) {
+            $page = $_GET['page'];
+        } elseif (isset($_GET['main'])) {
+            $page = 'main';
+        }
 
         // Ensure the page exists and is safe to include
         $allowed_pages = ['main', 'subnet-find', 'date-calculator', 'unixtime-calc', 'hash-calculator', 'lunar-iCal-generator'];
@@ -21,7 +26,7 @@
             }
         }
     ?>
-    <!-- JSON-LD를 통한 구조화된 데이터 (검색엔진이 페이지 컨텐츠를 이해하는 데 도움) -->
+    <!-- JSON-LD를 통한 구조화된 데이터 -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -41,107 +46,103 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'G-LTJ1SM2FD0');
     </script>
-    <!-- Google tag (gtag.js) -->
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 5px;
-            text-align: center;
-        }
-        nav {
-            margin-top: 5px;
-        }
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            margin-right: 5px;
-            padding: 5px;
-            display: inline-block;
-        }
-        nav a.active {
-            background-color: #555;
-            border-radius: 5px;
-        }
-        main {
-            padding: 5px;
-        }
-  	table {
-    	   border: 1px solid #555555;
-    	   border-collapse: collapse; /* 선택 사항: 테이블의 셀 간격을 제거합니다 */
-           padding: 5px; /* padding 속성은 테이블 전체에는 적용되지 않습니다. 셀에 적용하려면 별도로 설정해야 합니다 */
-  	}
-  	table td, th {
-    	   border: 1px solid #555555; /* 셀의 보더 색깔 설정 */
-           padding: 5px; /* 셀의 패딩 */
-  	}
-	div {
-    	  background-color: #dddddd;
-    	  color: #000000;
-    	  padding: 10px;
-  	}
-    /* main을 위한 css */
-    .container {
-        max-width: 1000px;
-        margin: 0 auto;
-        background-color: #fff;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-    }
-    .update-date {
-        color: #5D4037;
-        font-size: 14px;
-        text-align: left;
-        font-weight: bold;
-    }
-    ul {
-        line-height: 1.8;
-        color: #333;
-    }
-    li {
-       margin-bottom: 3px;
-    }
-    .highlight {
-        color: #d9534f;
-        font-weight: bold;
-    }
-    .section-title {
-        color: #0275d8;
-        font-weight: bold;
-    }
-    </style>
+
+    <!-- Modern Stylesheet -->
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <header>
-        <h1>taeho's internet tools</h1>
-        <nav>
-            <a href="?main" class="<?= isset($_GET['page']) && $_GET['page'] === 'main' ? 'active' : '' ?>">&nbsp;&nbsp;홈으로&nbsp;&nbsp;</a>
-            <a href="?page=subnet-find" class="<?= isset($_GET['page']) && $_GET['page'] === 'subnet-find' ? 'active' : '' ?>">IP 계산기</a>
-            <a href="?page=date-calculator" class="<?= isset($_GET['page']) && $_GET['page'] === 'date-calculator' ? 'active' : '' ?>">날짜 계산기</a>
-            <a href="?page=unixtime-calc" class="<?= isset($_GET['page']) && $_GET['page'] === 'unixtime-calc' ? 'active' : '' ?>">유닉스시간 변환기</a>
-            <a href="?page=hash-calculator" class="<?= isset($_GET['page']) && $_GET['page'] === 'hash-calculator' ? 'active' : '' ?>">Hash 계산기</a>
-            <a href="?page=lunar-iCal-generator" class="<?= isset($_GET['page']) && $_GET['page'] === 'lunar-iCal-generator' ? 'active' : '' ?>">음력 iCal 생성기</a>
-        </nav>
+    <header class="app-header">
+        <div class="header-inner">
+            <a href="?page=main" class="brand">
+                <div class="brand-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                </div>
+                <span class="brand-title">taeho's tools</span>
+            </a>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li>
+                        <a href="?page=main" class="nav-link <?= $page === 'main' ? 'active' : '' ?>">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                            홈
+                        </a>
+                    </li>
+                    <li>
+                        <a href="?page=subnet-find" class="nav-link <?= $page === 'subnet-find' ? 'active' : '' ?>">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                            IP 계산기
+                        </a>
+                    </li>
+                    <li>
+                        <a href="?page=date-calculator" class="nav-link <?= $page === 'date-calculator' ? 'active' : '' ?>">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            날짜 계산기
+                        </a>
+                    </li>
+                    <li>
+                        <a href="?page=unixtime-calc" class="nav-link <?= $page === 'unixtime-calc' ? 'active' : '' ?>">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            유닉스시간
+                        </a>
+                    </li>
+                    <li>
+                        <a href="?page=hash-calculator" class="nav-link <?= $page === 'hash-calculator' ? 'active' : '' ?>">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            Hash 계산기
+                        </a>
+                    </li>
+                    <li>
+                        <a href="?page=lunar-iCal-generator" class="nav-link <?= $page === 'lunar-iCal-generator' ? 'active' : '' ?>">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                            음력 iCal
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <button type="button" class="btn-theme-toggle" onclick="toggleTheme()" aria-label="테마 전환" title="라이트/다크 테마 전환">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
     </header>
-    <main>
+
+    <main class="main-wrapper">
     <?php
         if (in_array($page, $allowed_pages)) {
             include("$page.php");
         } else {
-            echo "<h1>페이지를 찾을 수 없습니다.</h1>";
-            echo "<p>죄송합니다, 요청하신 페이지가 존재하지 않습니다.</p>";
+            echo "<div class='card' style='text-align: center; padding: 3rem;'>";
+            echo "<h2 style='color: var(--danger); margin-bottom: 0.5rem;'>페이지를 찾을 수 없습니다.</h2>";
+            echo "<p style='color: var(--text-muted);'>요청하신 페이지가 존재하지 않거나 주소가 잘못되었습니다.</p>";
+            echo "<a href='?page=main' class='btn btn-primary' style='margin-top: 1.5rem;'>홈으로 돌아가기</a>";
+            echo "</div>";
         }
     ?>
     </main>
+
+    <footer class="app-footer">
+        <div class="footer-inner">
+            <div>
+                <strong>taeho's internet tools</strong> &copy; <?= date('Y') ?> &middot; All rights reserved.
+            </div>
+            <div class="footer-links">
+                <a href="https://tools.blogger.pe.kr" target="_blank" rel="noopener">tools.blogger.pe.kr</a>
+                <span>&middot;</span>
+                <a href="https://github.com/taeho9/internet_tools" target="_blank" rel="noopener">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Client Scripts -->
+    <script src="assets/js/app.js"></script>
 </body>
 </html>
